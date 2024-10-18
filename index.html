@@ -17,6 +17,7 @@
         .word-text span { margin-right: 0.5rem; }
         .word-actions button { background: none; color: #3b82f6; padding: 0.25rem; }
         .word-actions button:hover { color: #2563eb; }
+        .clear-button { margin-top: 1rem; }
     </style>
     <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
@@ -47,11 +48,17 @@
 
             const addWord = (e) => {
                 e.preventDefault();
-                if (englishWord && romanianWord) {
-                    setWords([...words, { english: englishWord, romanian: romanianWord }]);
-                    setEnglishWord('');
-                    setRomanianWord('');
+                if (!englishWord || !romanianWord) {
+                    alert("Both fields are required!");
+                    return;
                 }
+                setWords([...words, { english: englishWord, romanian: romanianWord }]);
+                setEnglishWord('');
+                setRomanianWord('');
+            };
+
+            const clearWords = () => {
+                setWords([]);
             };
 
             const speakWord = (word, lang) => {
@@ -93,6 +100,7 @@
                             </div>
                         ))}
                     </div>
+                    <button className="clear-button" onClick={clearWords}>Clear All Words</button>
                 </div>
             );
         };
