@@ -3,26 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React Hello World</title>
+    <title>English Learning Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <div id="root">
-        <h1>If you see this, React isn't working!</h1>
-    </div>
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+    <script type="text/babel" src="App.js"></script>
     <script type="text/babel">
-        function App() {
-            return (
-                <div className="App">
-                    <header className="App-header">
-                        <h1>Hello World!</h1>
-                    </header>
-                </div>
-            );
-        }
-
         ReactDOM.render(
             <React.StrictMode>
                 <App />
