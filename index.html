@@ -154,7 +154,7 @@
                     {quizActive && (
                         <div className="quiz-container">
                             <div className="quiz-question">
-                                <strong>Question {currentQuestion + 1}:</strong> What is the English word for "{words[currentQuestion]?.romanian}"?
+                                <strong>Question {currentQuestion + 1}:</strong> What is the English word for "{words[currentQuestion] && words[currentQuestion].romanian}"?
                             </div>
                             {quizOptions.map((option, index) => (
                                 <button key={index} onClick={() => handleAnswer(option)}>{option}</button>
