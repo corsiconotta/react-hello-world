@@ -18,6 +18,9 @@
         .word-actions button { background: none; color: #3b82f6; padding: 0.25rem; }
         .word-actions button:hover { color: #2563eb; }
         .clear-button { margin-top: 1rem; }
+        .quiz-container { margin-top: 1rem; }
+        .quiz-question { margin-bottom: 1rem; }
+        .result { font-weight: bold; margin-top: 1rem; }
     </style>
     <script src="https://unpkg.com/react@17/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js" crossorigin></script>
@@ -34,6 +37,11 @@
             const [words, setWords] = useState([]);
             const [englishWord, setEnglishWord] = useState('');
             const [romanianWord, setRomanianWord] = useState('');
+            const [quizActive, setQuizActive] = useState(false);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [score, setScore] = useState(0);
+            const [quizResults, setQuizResults] = useState([]);
+            const [quizOptions, setQuizOptions] = useState([]);
 
             useEffect(() => {
                 const savedWords = localStorage.getItem('words');
@@ -65,6 +73,45 @@
                 const utterance = new SpeechSynthesisUtterance(word);
                 utterance.lang = lang === 'english' ? 'en-US' : 'ro-RO';
                 speechSynthesis.speak(utterance);
+            };
+
+            const startQuiz = () => {
+                setQuizActive(true);
+                setCurrentQuestion(0);
+                setScore(0);
+                generateQuizOptions();
+            };
+
+            const generateQuizOptions = () => {
+                if (words.length > 0) {
+                    const currentWord = words[currentQuestion].english;
+                    const options = [currentWord];
+
+                    while (options.length < 4) {
+                        const randomWord = words[Math.floor(Math.random() * words.length)].english;
+                        if (!options.includes(randomWord)) {
+                            options.push(randomWord);
+                        }
+                    }
+                    setQuizOptions(options.sort(() => Math.random() - 0.5));
+                }
+            };
+
+            const handleAnswer = (answer) => {
+                const correctAnswer = words[currentQuestion].english;
+                if (answer === correctAnswer) {
+                    setScore(score + 1);
+                    setQuizResults([...quizResults, { question: correctAnswer, correct: true }]);
+                } else {
+                    setQuizResults([...quizResults, { question: correctAnswer, correct: false }]);
+                }
+
+                if (currentQuestion < words.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    generateQuizOptions();
+                } else {
+                    setQuizActive(false);
+                }
             };
 
             return (
@@ -101,6 +148,26 @@
                         ))}
                     </div>
                     <button className="clear-button" onClick={clearWords}>Clear All Words</button>
+                    
+                    {/* Quiz Section */}
+                    <button onClick={startQuiz}>Start Quiz</button>
+                    {quizActive && (
+                        <div className="quiz-container">
+                            <div className="quiz-question">
+                                <strong>Question {currentQuestion + 1}:</strong> What is the English word for "{words[currentQuestion]?.romanian}"?
+                            </div>
+                            {quizOptions.map((option, index) => (
+                                <button key={index} onClick={() => handleAnswer(option)}>{option}</button>
+                            ))}
+                        </div>
+                    )}
+                    {!quizActive && quizResults.length > 0 && (
+                        <div className="result">
+                            <h2>Quiz Finished!</h2>
+                            <p>Your Score: {score} out of {words.length}</p>
+                            <p>Correct Answers: {quizResults.filter(result => result.correct).length}</p>
+                        </div>
+                    )}
                 </div>
             );
         };
